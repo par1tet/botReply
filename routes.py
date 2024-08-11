@@ -1,5 +1,5 @@
 from aiogram.filters import CommandStart, Command
-from aiogram.types import Message
+from aiogram.types import Message, ContentType
 from aiogram import Router
 from aiogram import F
 import random
@@ -94,8 +94,10 @@ async def add_phrase(ms: Message):
                 json.dump(dataInfo, dataW, indent=4,ensure_ascii=False)
             return 0
 
-@r.message(F.photo)
+@r.message()
 async def on_photo(ms: Message):
+    if ms.content_type != ContentType.VIDEO and ms.content_type != ContentType.PHOTO and ms.content_type != ContentType.ANIMATION:
+        return 0
     with open("data.json") as dataFile:
         dataInfo = json.load(dataFile)
         for i in dataInfo['info']:
