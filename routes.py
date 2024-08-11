@@ -31,8 +31,8 @@ async def add_phrase(ms: Message):
         await ms.reply('фраз нет кароче')
         return 0
     answer = 'вот те фразы\n'
-    for i in random_phrases:
-        answer += f'{i}\n'
+    for i in range(len(random_phrases)):
+        answer += f'{i+1}: {random_phrases[i]}\n'
     await ms.reply(answer)
     
 @r.message(F.text.startswith('добавить фразу'))
@@ -96,7 +96,7 @@ async def add_phrase(ms: Message):
 
 @r.message()
 async def on_photo(ms: Message):
-    if ms.content_type != ContentType.VIDEO and ms.content_type != ContentType.PHOTO and ms.content_type != ContentType.ANIMATION:
+    if ms.content_type != ContentType.VIDEO and ms.content_type != ContentType.PHOTO and ms.content_type != ContentType.ANIMATION and ms.content_type != ContentType.STICKER:
         return 0
     with open("data.json") as dataFile:
         dataInfo = json.load(dataFile)
