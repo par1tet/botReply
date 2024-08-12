@@ -99,7 +99,7 @@ async def delete_phrase(ms: Message):
                 if len(ms.text.split(' ')) < 3:
                     await ms.reply('эээ, а че удалять')
                     return 0
-                id = ms.text.split(' ')[-1]
+                id = ms.text[13:]
                 if not (id in i['phrases']):
                     await ms.reply('ти шо ебобо, нет такой фразу')
                     return 0
