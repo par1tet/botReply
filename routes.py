@@ -97,16 +97,16 @@ async def delete_phrase(ms: Message):
             flag = False
             if(int(i['id']) == ms.chat.id):
                 if len(ms.text.split(' ')) < 3:
-                    await ms.reply('эээ, а где число, че удалять')
+                    await ms.reply('эээ, а че удалять')
                     return 0
                 id = ms.text.split(' ')[-1]
-                if int(id) > len(i['phrases']):
+                if not (id in i['phrases']):
                     await ms.reply('ти шо ебобо, нет такой фразу')
                     return 0
-                elif int(id) < 1:
-                    await ms.reply('ти шо ебобо, како меньше отнаго')
-                    return 0
-                i['phrases'].remove(i['phrases'][int(id)-1])
+                # elif int(id) < 1:
+                #     await ms.reply('ти шо ебобо, како меньше отнаго')
+                #     return 0
+                i['phrases'].remove(id)
                 await ms.reply('удалил, проверяй😈')
                 flag = True
                 with open('data.json', 'w') as dataW:
@@ -121,16 +121,6 @@ async def delete_phrase(ms: Message):
             with open('data.json', 'w') as dataW:
                 json.dump(dataInfo, dataW, indent=4,ensure_ascii=False)
             return 0
-        
-@r.message(F.text[0:9].lower() == 'ирис кого')
-async def delete_phrase(ms: Message):
-    if len(ms.text.split(' ')) < 3:
-        await ms.answer('че каво')
-        return 0
-    async with Client("my_account", api_id, api_hash) as app:
-        async for member in app.get_chat_members(-1002162071088):
-            print(member)
-    await ms.answer(123)
 
 @r.message()
 async def on_photo(ms: Message):
