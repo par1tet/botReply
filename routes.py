@@ -4,10 +4,15 @@ from aiogram import Router
 from aiogram import F
 import random
 import json
+import asyncio
 
 r = Router()
 
-@r.message(F.text.lower() == 'получить все фразы')
+@r.message(F.text.lower() == 'бот')
+async def add_phse(ms: Message):
+    await ms.reply('слыш ты кого ботом назвал')
+
+@r.message(F.text.lower() == 'узнать фразы')
 async def add_phrase(ms: Message):
     print(ms.chat.id)
     with open("data.json") as dataFile:
@@ -35,7 +40,7 @@ async def add_phrase(ms: Message):
         answer += f'{i+1}: {random_phrases[i]}\n'
     await ms.reply(answer)
     
-@r.message(F.text.startswith('добавить фразу'))
+@r.message(F.text[0:14].lower() == 'добавить фразу')
 async def add_phrase(ms: Message):
     with open("data.json") as dataFile:
         dataInfo = json.load(dataFile)
@@ -61,8 +66,8 @@ async def add_phrase(ms: Message):
             return 0
     await ms.reply('добавель')
     
-@r.message(F.text.startswith('удалить фразу'))
-async def add_phrase(ms: Message):
+@r.message(F.text[0:13].lower() == 'удалить фразу')
+async def delete_phrase(ms: Message):
     with open("data.json") as dataFile:
         dataInfo = json.load(dataFile)
         for i in dataInfo['info']:
@@ -71,7 +76,7 @@ async def add_phrase(ms: Message):
                 if len(ms.text.split(' ')) < 3:
                     await ms.reply('эээ, а где число, че удалять')
                     return 0
-                id = ms.text.split(' ')[2]
+                id = ms.text.split(' ')[-1]
                 if int(id) > len(i['phrases']):
                     await ms.reply('ти шо ебобо, нет такой фразу')
                     return 0
@@ -93,6 +98,16 @@ async def add_phrase(ms: Message):
             with open('data.json', 'w') as dataW:
                 json.dump(dataInfo, dataW, indent=4,ensure_ascii=False)
             return 0
+        
+@r.message(F.text[0:9].lower() == 'ирис кого')
+async def delete_phrase(ms: Message):
+    if len(ms.text.split(' ')) < 3:
+        await ms.answer('че каво')
+        return 0
+    async with Client("my_account", api_id, api_hash) as app:
+        async for member in app.get_chat_members(-1002162071088):
+            print(member)
+    await ms.answer(123)
 
 @r.message()
 async def on_photo(ms: Message):
@@ -104,10 +119,9 @@ async def on_photo(ms: Message):
             flag = False
             if(int(i['id']) == ms.chat.id):
                 if (i['phrases'] == []):
+                    await ms.reply('фраз нет кароче')
                     return 0
-                test = random.randint(0,(len(i['phrases'])-1))
-                print(test)
-                await ms.reply(i['phrases'][test])
+                await ms.reply(i['phrases'][random.randint(0,(len(i['phrases'])-1))])
                 flag = True
                 break
         if(flag == False):
