@@ -40,6 +40,29 @@ async def add_phrase(ms: Message):
         answer += f'{i+1}: {random_phrases[i]}\n'
     await ms.reply(answer)
     
+@r.message(F.text == 'получить рандом фразу')
+async def add_phrase(ms: Message):
+    with open("data.json") as dataFile:
+        dataInfo = json.load(dataFile)
+        for i in dataInfo['info']:
+            flag = False
+            if(int(i['id']) == ms.chat.id):
+                if (i['phrases'] == []):
+                    await ms.reply('фраз нет кароче')
+                    return 0
+                await ms.reply(i['phrases'][random.randint(0,(len(i['phrases'])-1))])
+                flag = True
+                break
+        if(flag == False):
+            await ms.reply('фраз нет кароче')
+            dataInfo['info'].append({
+                "id":ms.chat.id,
+                "phrases":[]
+            })
+            with open('data.json', 'w') as dataW:
+                json.dump(dataInfo, dataW, indent=4,ensure_ascii=False)
+            return 0
+    
 @r.message(F.text[0:14].lower() == 'добавить фразу')
 async def add_phrase(ms: Message):
     with open("data.json") as dataFile:
