@@ -4,7 +4,7 @@ from aiogram import Bot, Dispatcher
 from routes import r
 
 
-TOKEN = "7333198091:AAFL9bK9eIt077K3Q_zmFrDx00GlQOSDcCg"
+TOKEN = "7590463321:AAF_XdG82JrnxpFlWh9vT5PFWtWq4OSWA9I"
 
 async def main():
     bot = Bot(token=TOKEN)

@@ -8,10 +8,15 @@ import asyncio
 
 r = Router()
 
-@r.message(F.text.lower() == 'бот')
-async def add_phse(ms: Message):
-    await ms.reply('слыш ты кого ботом назвал')
+#@r.message(F.text[0:1].lower() == '.')
+#async def add_phse(ms: Message):
+    #await ms.delete()
+    #await ms.answer(ms.text[1:])
 
+@r.message(F.text.lower().contains("чичивап"))
+async def add_phrase(ms: Message):
+    await ms.reply(ms.text)
+    
 @r.message(F.text.lower() == 'узнать фразы')
 async def add_phrase(ms: Message):
     print(ms.chat.id)
@@ -69,6 +74,8 @@ async def add_phrase(ms: Message):
         dataInfo = json.load(dataFile)
         for i in dataInfo['info']:
             flag = False
+            if ms.text[15:].strip() == "":
+                await ms.reply("пустато")
             if(int(i['id']) == ms.chat.id):
                 if ms.text[15:] in i['phrases']:
                     await ms.reply('есть такая фраза пупсик')
@@ -146,3 +153,16 @@ async def on_photo(ms: Message):
             with open('data.json', 'w') as dataW:
                 json.dump(dataInfo, dataW, indent=4,ensure_ascii=False)
             return 0
+
+@r.message(F.text[0] == '.')
+async def add_phse(ms: Message):
+    await ms.answer(ms.text[1:])
+    await ms.delete()
+
+@r.message()
+async def add_phse(ms: Message):
+    if ms.chat.id != -1002631703522:
+        return 0
+    print(ms.from_user.id)
+    print(ms.from_user.full_name)
+    print(ms.text)   
