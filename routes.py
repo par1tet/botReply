@@ -12,6 +12,12 @@ r = Router()
 #async def add_phse(ms: Message):
     #await ms.delete()
     #await ms.answer(ms.text[1:])
+ 
+@r.message(F.text[0] == '.')
+async def add_phse(ms: Message):
+    await ms.answer(ms.text[1:])
+    print(f"ЕБать секретни: {ms.from_user.full_name}\ntext: {ms.text}")
+    await ms.delete()
 
 @r.message(F.text.lower().contains("чичивап"))
 async def add_phrase(ms: Message):
@@ -106,14 +112,14 @@ async def delete_phrase(ms: Message):
                 if len(ms.text.split(' ')) < 3:
                     await ms.reply('эээ, а че удалять')
                     return 0
-                id = ms.text[13:]
-                if not (id in i['phrases']):
+                id = int(ms.text[13:]) - 1
+                if id in i['phrases']:
                     await ms.reply('ти шо ебобо, нет такой фразу')
                     return 0
                 # elif int(id) < 1:
                 #     await ms.reply('ти шо ебобо, како меньше отнаго')
                 #     return 0
-                i['phrases'].remove(id)
+                i['phrases'].pop(id)
                 await ms.reply('удалил, проверяй😈')
                 flag = True
                 with open('data.json', 'w') as dataW:
@@ -131,7 +137,11 @@ async def delete_phrase(ms: Message):
 
 @r.message()
 async def on_photo(ms: Message):
+    if ms.from_user.id == 6124318812:
+        return 0
     if ms.content_type != ContentType.VIDEO and ms.content_type != ContentType.PHOTO and ms.content_type != ContentType.ANIMATION and ms.content_type != ContentType.STICKER:
+        return 0
+    if ms.from_user.id == 1:
         return 0
     with open("data.json") as dataFile:
         dataInfo = json.load(dataFile)
@@ -153,16 +163,10 @@ async def on_photo(ms: Message):
             with open('data.json', 'w') as dataW:
                 json.dump(dataInfo, dataW, indent=4,ensure_ascii=False)
             return 0
-
-@r.message(F.text[0] == '.')
-async def add_phse(ms: Message):
-    await ms.answer(ms.text[1:])
-    await ms.delete()
-
 @r.message()
 async def add_phse(ms: Message):
-    if ms.chat.id != -1002631703522:
-        return 0
+    #if ms.chat.id != -1002631703522:
+        #return 0
     print(ms.from_user.id)
     print(ms.from_user.full_name)
-    print(ms.text)   
+    print(ms.text)
